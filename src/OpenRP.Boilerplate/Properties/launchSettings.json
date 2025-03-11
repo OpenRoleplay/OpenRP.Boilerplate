@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "Start Testing": {
+      "commandName": "Executable",
+      "executablePath": "$(SolutionDir)Server\\omp-server.exe",
+      "workingDirectory": "$(SolutionDir)Server\\"
+    }
+  }
+}
