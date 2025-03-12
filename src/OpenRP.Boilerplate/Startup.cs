@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EFCoreSecondLevelCacheInterceptor;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using OpenRP.Boilerplate.Configuration;
 using OpenRP.Boilerplate.Data;
 using OpenRP.Boilerplate.LegacyFeatures.Characters.Services;
@@ -43,6 +45,10 @@ namespace OpenRP.Boilerplate
                     ServiceLifetime.Transient
                 )
                 .AddTransient<BaseDataContext>(provider => provider.GetService<DataContext>())
+                .AddMemoryCache()
+                .AddEFSecondLevelCache(options =>
+                    options.UseMemoryCacheProvider()
+                        .CacheAllQueries(CacheExpirationMode.Absolute, TimeSpan.FromMinutes(15)))
                 .AddSingleton<IStreamerService, StreamerService>()
                 .AddSingleton<IColAndreasService, ColAndreasService>()
                 .AddSingleton<ITryg3DService, Tryg3DService>()
