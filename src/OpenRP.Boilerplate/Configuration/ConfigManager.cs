@@ -23,7 +23,7 @@ namespace OpenRP.Boilerplate.Configuration
         private ConfigManager()
         {
             string filePath = GetFileOrDirectory(null, null);
-            string fileName = GetFileOrDirectory(null, "Config.json");
+            string fileName = GetFileOrDirectory(null, "openrp.config.json");
 
             Console.WriteLine($"Config located at {fileName}");
 
@@ -51,7 +51,7 @@ namespace OpenRP.Boilerplate.Configuration
 
         public static string GetFileOrDirectory(string? path = null, string? file = null)
         {
-            string rootPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData)}{System.IO.Path.DirectorySeparatorChar}OpenRP.GameMode";
+            string rootPath = Directory.GetCurrentDirectory();
 
             if (!String.IsNullOrEmpty(path))
             {
@@ -78,7 +78,7 @@ namespace OpenRP.Boilerplate.Configuration
 
         public void Save()
         {
-            string fileName = GetFileOrDirectory(null, @"Config.json");
+            string fileName = GetFileOrDirectory(null, @"openrp.config.json");
             string json = JsonConvert.SerializeObject(Data, Formatting.Indented);
 
             using (StreamWriter sw = new StreamWriter(fileName, false))

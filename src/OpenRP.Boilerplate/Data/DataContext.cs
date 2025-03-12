@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using OpenRP.Boilerplate.Configuration;
 using OpenRP.Framework.Database;
+using OpenRP.Framework.Extensions;
 
 namespace OpenRP.Boilerplate.Data
 {
@@ -24,6 +25,13 @@ namespace OpenRP.Boilerplate.Data
                     )
                     .LogTo(Console.WriteLine, LogLevel.Information);
             }
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.ApplyOpenRoleplayFrameworkModelConfigurations();
         }
     }
 }
