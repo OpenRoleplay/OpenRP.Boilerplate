@@ -15,6 +15,7 @@ using OpenRP.Boilerplate.LegacyFeatures.Properties.Services;
 using OpenRP.Boilerplate.LegacyFeatures.Vehicles.Managers;
 using OpenRP.Framework.Database;
 using OpenRP.Framework.Extensions;
+using OpenRP.Framework.Features.ActorConversations.Extensions;
 using OpenRP.Framework.Features.CDN.Extensions;
 using OpenRP.Framework.Features.Discord.Extensions;
 using OpenRP.Framework.Features.Vehicles.Services;
@@ -26,6 +27,7 @@ using SampSharp.Entities;
 using SampSharp.Entities.SAMP;
 using SampSharp.Streamer.Entities;
 using SampSharp.Tryg3D.Entities.Services;
+using System.Reflection;
 
 namespace OpenRP.Boilerplate
 {
@@ -52,6 +54,7 @@ namespace OpenRP.Boilerplate
                 .AddSingleton<IStreamerService, StreamerService>()
                 .AddSingleton<IColAndreasService, ColAndreasService>()
                 .AddSingleton<ITryg3DService, Tryg3DService>()
+                .AddOpenRoleplayFramework()
                 .AddTransient<ICharacterService, CharacterService>()
                 .AddTransient<ICharacterVehicleManager, CharacterVehicleManager>()
                 .AddTransient<ICurrencyService, CurrencyService>()
@@ -60,11 +63,14 @@ namespace OpenRP.Boilerplate
                 .AddSingleton<IFactionManager, FactionManager>()
                 .AddSingleton<IPropertyManager, PropertyManager>()
                 .AddSingleton<IChickenCoopManager, ChickenCoopManager>()
+                .AddActorConversations(options =>
+                {
+                    options.ChatGptApiKey = ConfigManager.Instance.Data.OpenAI_API;
+                })
                 .AddWorldWeather(options => { })
                 .AddWorldTime(options => { })
                 .AddCDN(options => { })
                 .AddDiscord(options => { })
-                .AddOpenRoleplayFramework()
                 .AddSystemsInAssembly()
                 .AddServerSystemsInAssembly();
 

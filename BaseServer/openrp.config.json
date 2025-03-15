@@ -1,0 +1,5 @@
+{
+  "ConnectionString": "server=localhost;user=root;password=;database=openrp-boilerplate;ConvertZeroDateTime=True;",
+  "OpenAI_API": "",
+  "DiscordBot_Token": ""
+}

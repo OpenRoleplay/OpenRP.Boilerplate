@@ -1,19 +1,21 @@
 # Define variables
 $baseServerPath = Join-Path $PSScriptRoot "BaseServer"
 $serverPath = Join-Path $PSScriptRoot "Server"
-$pluginsFolder = Join-Path $serverFolder "plugins"
+$pluginsFolder = Join-Path $serverPath "plugins"
 $openMpZip = "open.mp-win-x86.zip"
 $sampSharpZip = "SampSharp.zip"
 $streamerZip = "Streamer.zip"
 $sampSharpRepo = "ikkentim/SampSharp"
 $streamerRepo = "samp-incognito/samp-streamer-plugin"
+$colAndreasRepo = "Pottus/ColAndreas"
 $dotnetFolder = Join-Path $serverPath "dotnet"
 $dotnetUrl = "https://builds.dotnet.microsoft.com/dotnet/Sdk/6.0.428/dotnet-sdk-6.0.428-win-x86.zip"
 $dotnetZip = "dotnet-runtime.zip"
+$colAndreasWizardExe = "ColAndreasWizard.exe"
 
 # Ensure required directories exist
-if (!(Test-Path -Path $serverFolder)) {
-    New-Item -ItemType Directory -Path $serverFolder | Out-Null
+if (!(Test-Path -Path $serverPath)) {
+    New-Item -ItemType Directory -Path $serverPath | Out-Null
 }
 if (!(Test-Path -Path $pluginsFolder)) {
     New-Item -ItemType Directory -Path $pluginsFolder | Out-Null
@@ -80,9 +82,8 @@ if ($streamerAsset) {
 
     Write-Host "Streamer Plugin download and extraction complete!"
 
-    # Check if 'plugins' folder exists directly inside the extracted folder
+    # Move 'plugins' folder contents
     $streamerPlugins = Join-Path $tempExtractPath "plugins"
-
     if (Test-Path -Path $streamerPlugins) {
         Move-Item -Path (Join-Path $streamerPlugins "*") -Destination $pluginsFolder -Force
         Write-Host "Streamer Plugin moved to Server/plugins!"
@@ -96,23 +97,57 @@ if ($streamerAsset) {
     Write-Host "Could not find a valid Streamer Plugin release!"
 }
 
-# Ensure the dotnet directory exists
+# --- Download and Place ColAndreas.dll in Plugins Folder ---
+$colAndreasRelease = Invoke-RestMethod -Uri "https://api.github.com/repos/$colAndreasRepo/releases/latest"
+$colAndreasAsset = $colAndreasRelease.assets | Where-Object { $_.name -match "ColAndreas.dll" } | Select-Object -First 1
+
+if ($colAndreasAsset) {
+    $colAndreasUrl = $colAndreasAsset.browser_download_url
+    $colAndreasDll = Join-Path $pluginsFolder "ColAndreas.dll"
+
+    # Download file (Fixed: Removed -Force, Added -UseBasicParsing)
+    Invoke-WebRequest -Uri $colAndreasUrl -OutFile $colAndreasDll -UseBasicParsing
+
+    Write-Host "ColAndreas.dll downloaded and placed in Server/plugins!"
+} else {
+    Write-Host "Could not find a valid ColAndreas.dll release!"
+}
+
+# --- Download ColAndreasWizard.exe and Start It ---
+$colAndreasWizardAsset = $colAndreasRelease.assets | Where-Object { $_.name -match "ColAndreasWizard.exe" } | Select-Object -First 1
+
+if ($colAndreasWizardAsset) {
+    $colAndreasWizardUrl = $colAndreasWizardAsset.browser_download_url
+    $colAndreasWizardPath = Join-Path $PSScriptRoot "ColAndreasWizard.exe"
+
+    # Download without using -Force (fixed)
+    Invoke-WebRequest -Uri $colAndreasWizardUrl -OutFile $colAndreasWizardPath -UseBasicParsing
+
+    Write-Host "ColAndreasWizard.exe downloaded to root folder."
+
+    # Ensure file exists before starting
+    if (Test-Path -Path $colAndreasWizardPath) {
+        Start-Process -FilePath $colAndreasWizardPath
+        Write-Host "ColAndreasWizard.exe started."
+    } else {
+        Write-Host "Error: ColAndreasWizard.exe was not downloaded successfully!"
+    }
+} else {
+    Write-Host "Could not find a valid ColAndreasWizard.exe release!"
+}
+
+# --- Download and Extract .NET 6.0 Runtime ---
 if (!(Test-Path -Path $dotnetFolder)) {
     New-Item -ItemType Directory -Path $dotnetFolder | Out-Null
 }
 
-# Download .NET 6.0 runtime
 Invoke-WebRequest -Uri $dotnetUrl -OutFile $dotnetZip
-
-# Extract .NET runtime into the dotnet folder
 Expand-Archive -Path $dotnetZip -DestinationPath $dotnetFolder -Force
-
-# Cleanup
 Remove-Item -Path $dotnetZip -Force
 
 Write-Host ".NET 6.0 runtime downloaded and placed in Server/dotnet successfully!"
 
-# Copy contents of BaseServer to Server, overwriting existing files
+# --- Copy contents of BaseServer to Server, overwriting existing files ---
 if (Test-Path -Path $baseServerPath) {
     Get-ChildItem -Path $baseServerPath | ForEach-Object {
         Copy-Item -Path $_.FullName -Destination $serverPath -Recurse -Force

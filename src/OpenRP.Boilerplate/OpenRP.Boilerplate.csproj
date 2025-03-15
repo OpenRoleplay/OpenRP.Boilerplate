@@ -21,16 +21,16 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
     <PackageReference Include="MySqlConnector" Version="2.4.0" />
-    <PackageReference Include="OpenRP.Framework" Version="0.1.0-preview.2025.10.4" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="OpenRP.Framework" Version="0.1.0-preview.2025.10.9" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql.NetTopologySuite" Version="7.0.0" />
+    <PackageReference Include="SampSharp.ColAndreas.Entities" Version="0.1.1" />
     <PackageReference Include="SampSharp.Core" Version="0.11.1" />
     <PackageReference Include="SampSharp.Entities" Version="0.11.1" />
+    <PackageReference Include="SampSharp.Streamer.Entities" Version="0.10.0" />
     <PackageReference Include="SampSharp.Tryg3D.Entities" Version="0.1.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="LegacyFeatures\" />
   </ItemGroup>
 
 </Project>
