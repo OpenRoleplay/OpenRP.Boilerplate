@@ -30,7 +30,7 @@
 
 4. **Configure Your Server**  
    After running the prepare script, navigate to the **Server** folder. Open the `openrp.config.json` file and fill in your database information. You can also fill in the rest, but it's not required. 
-   **Tip:** I personally use XAMPP. If you choose another solution, I recommend at least using MariaDB.
+   **Tip:** I personally use XAMPP to host a local database. If you choose another solution, I recommend at least using MariaDB.
 
 5. **Run a Fresh Database Migration**  
    Ensure your database is running, then execute the `FreshMigration.ps1` script. This script performs a fresh migration of your database models, ideal for when you're updating the schema and want to avoid migration headaches (but at the cost of losing all present database data).
