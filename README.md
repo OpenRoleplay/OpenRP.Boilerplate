@@ -29,7 +29,7 @@
    - Launch the ColAndreas wizard, **make sure to point it to your GTA SA installation.**
 
 4. **Configure Your Server**  
-   After running the prepare script, navigate to the **Server** folder. Open the `openrp.config.json` file and fill in your database information.  
+   After running the prepare script, navigate to the **Server** folder. Open the `openrp.config.json` file and fill in your database information. You can also fill in the rest, but it's not required. 
    **Tip:** I personally use XAMPP. If you choose another solution, I recommend at least using MariaDB.
 
 5. **Run a Fresh Database Migration**  
