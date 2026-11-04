@@ -4,7 +4,7 @@ using OpenRP.Boilerplate.LegacyFeatures.Harvestables.Entities;
 using SampSharp.ColAndreas.Entities.Services;
 using SampSharp.Entities;
 using SampSharp.Entities.SAMP;
-using SampSharp.Streamer.Entities;
+using OpenRP.Streamer;
 
 namespace OpenRP.Boilerplate.LegacyFeatures.Harvestables.Components
 {

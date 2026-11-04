@@ -1,6 +1,6 @@
 ﻿using SampSharp.Entities.SAMP;
 using SampSharp.Entities;
-using SampSharp.Streamer.Entities;
+using OpenRP.Streamer;
 using OpenRP.Boilerplate.LegacyFeatures.Players.Helpers;
 using OpenRP.Boilerplate.LegacyFeatures.Inventories.Services;
 using OpenRP.Boilerplate.LegacyFeatures.Inventories.Helpers;

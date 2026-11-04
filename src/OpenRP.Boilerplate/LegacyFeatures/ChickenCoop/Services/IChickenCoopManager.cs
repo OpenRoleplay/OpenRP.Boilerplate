@@ -1,4 +1,4 @@
-﻿using SampSharp.Streamer.Entities;
+﻿using OpenRP.Streamer;
 
 namespace OpenRP.Boilerplate.LegacyFeatures.ChickenCoop.Services
 {

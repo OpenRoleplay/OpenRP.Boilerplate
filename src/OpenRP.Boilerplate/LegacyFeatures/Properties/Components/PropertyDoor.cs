@@ -2,7 +2,7 @@
 using OpenRP.Boilerplate.LegacyFeatures.Properties.Entities;
 using SampSharp.Entities;
 using SampSharp.Entities.SAMP;
-using SampSharp.Streamer.Entities;
+using OpenRP.Streamer;
 
 namespace OpenRP.Boilerplate.LegacyFeatures.Properties.Components
 {
