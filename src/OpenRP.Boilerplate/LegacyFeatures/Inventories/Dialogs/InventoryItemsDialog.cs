@@ -4,7 +4,6 @@ using OpenRP.Framework.Features.Characters.Components;
 using OpenRP.Framework.Shared;
 using OpenRP.Framework.Shared.Chat.Services;
 using OpenRP.Framework.Shared.Dialogs.Helpers;
-using OpenRP.Boilerplate.LegacyFeatures.Characters.Services;
 using OpenRP.Boilerplate.LegacyFeatures.DroppedItems.Services;
 using OpenRP.Boilerplate.LegacyFeatures.Inventories.Components;
 using OpenRP.Boilerplate.LegacyFeatures.Inventories.Helpers;
@@ -18,7 +17,7 @@ namespace OpenRP.Boilerplate.LegacyFeatures.Inventories.Dialogs
 {
     public class InventoryItemsDialog
     {
-        public static void Open(Player player, List<InventoryItemModel> inventoryItemsToShow, IDialogService dialogService, IEntityManager entityManager, IColAndreasService colAndreasService, ICharacterService characterService, IDroppedItemService droppedItemService, IInventoryService inventoryService, IChatService chatService, IDataMemoryService dataMemoryService, InventoryArgument[] args = null)
+        public static void Open(Player player, List<InventoryItemModel> inventoryItemsToShow, IDialogService dialogService, IEntityManager entityManager, IColAndreasService colAndreasService, ICharacterInventoryService characterInventoryService, IDroppedItemService droppedItemService, IInventoryService inventoryService, IChatService chatService, IDataMemoryService dataMemoryService, InventoryArgument[] args = null)
         {
             Character characterComponent = player.GetComponent<Character>();
             if (characterComponent != null)
@@ -111,7 +110,7 @@ namespace OpenRP.Boilerplate.LegacyFeatures.Inventories.Dialogs
                         {
                             openInventoryComponent.selectedInventoryItem = openInventoryComponent.openedInventoryItems.ElementAt(r.ItemIndex);
 
-                            InventoryItemSelectedDialog.Open(player, openInventoryComponent, dialogService, entityManager, colAndreasService, characterService, droppedItemService, inventoryService, chatService, dataMemoryService);
+                            InventoryItemSelectedDialog.Open(player, openInventoryComponent, dialogService, entityManager, colAndreasService, characterInventoryService, droppedItemService, inventoryService, chatService, dataMemoryService);
                         }
                         else
                         {

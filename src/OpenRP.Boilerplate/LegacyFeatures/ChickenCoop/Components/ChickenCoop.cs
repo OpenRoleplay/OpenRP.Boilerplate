@@ -6,7 +6,6 @@ using OpenRP.Boilerplate.LegacyFeatures.Inventories.Services;
 using OpenRP.Boilerplate.LegacyFeatures.Inventories.Helpers;
 using OpenRP.Framework.Database.Models;
 using OpenRP.Framework.Features.Characters.Components;
-using OpenRP.Framework.Features.Characters.Services;
 using OpenRP.Framework.Shared.Chat.Extensions;
 using OpenRP.Framework.Shared.Chat.Enums;
 using OpenRP.Framework.Features.Players.Extensions;
@@ -91,12 +90,12 @@ namespace OpenRP.Boilerplate.LegacyFeatures.ChickenCoop.Components
             return false;
         }
 
-        public void CollectEgg(Player player, IEntityManager entityManager, ITempCharacterService characterService, IInventoryService inventoryService, IChatService chatService, IDataMemoryService dataMemoryService, IOpenCdnService openCdnService)
+        public void CollectEgg(Player player, IEntityManager entityManager, ICharacterInventoryService characterInventoryService, IInventoryService inventoryService, IChatService chatService, IDataMemoryService dataMemoryService, IOpenCdnService openCdnService)
         {
             if(player.IsPlayerPlayingAsCharacter())
             {
                 Character character = player.GetComponent<Character>();
-                InventoryModel characterInventory = characterService.GetCharacterInventory(character);
+                InventoryModel characterInventory = characterInventoryService.GetCharacterInventoryModel(character);
                 ItemModel eggItem = entityManager.GetComponents<Item>().FirstOrDefault(i => i.GetId() == 36).GetItemModel();
                 InventoryItemModel eggItemToAdd = inventoryService.PrepareItem(characterInventory.Id, eggItem, 1);
 

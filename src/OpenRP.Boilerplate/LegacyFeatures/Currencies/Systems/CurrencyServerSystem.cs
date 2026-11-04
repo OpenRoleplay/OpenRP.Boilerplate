@@ -4,7 +4,6 @@ using OpenRP.Framework.Shared.ServerEvents.Attributes;
 using OpenRP.Framework.Shared.ServerEvents.Entities;
 using OpenRP.Framework.Shared.ServerEvents.Services;
 using OpenRP.Framework.Features.Accounts.Components;
-using OpenRP.Boilerplate.LegacyFeatures.Characters.Services;
 using OpenRP.Boilerplate.LegacyFeatures.Currencies.Services;
 using OpenRP.Framework.Features.Players.Extensions;
 using OpenRP.Framework.Shared.ServerEvents.Entities.EventArgs;
@@ -14,7 +13,7 @@ namespace OpenRP.Boilerplate.LegacyFeatures.Currencies.Systems
     public class CurrencyServerSystem : IServerSystem
     {
         [ServerEvent]
-        public void OnPlayerCashUpdate(OnPlayerCashUpdateEventArgs args, ICharacterService characterService, ICurrencyService currencyService)
+        public void OnPlayerCashUpdate(OnPlayerCashUpdateEventArgs args, ICurrencyService currencyService)
         {
             try
             {
@@ -27,9 +26,7 @@ namespace OpenRP.Boilerplate.LegacyFeatures.Currencies.Systems
                 if (!args.Player.IsPlayerPlayingAsCharacter())
                     return;
 
-                CharacterPreferencesModel preferences = characterService.GetCharacterPreferences(character);
-
-                if (preferences.DefaultCurrencyId == args.CurrencyId)
+                if (character.GetPreferences().GetDefaultCurrencyId() == args.CurrencyId)
                 {
                     decimal newAmount = currencyService.GetCharacterCurrency(character, args.CurrencyId);
 
@@ -44,15 +41,14 @@ namespace OpenRP.Boilerplate.LegacyFeatures.Currencies.Systems
         }
 
         [ServerEvent]
-        public async void OnCharacterSelected(OnCharacterSelectedEventArgs eventArgs, ICharacterService characterService, IServerEventAggregator serverEventAggregator)
+        public async void OnCharacterSelected(OnCharacterSelectedEventArgs eventArgs, IServerEventAggregator serverEventAggregator)
         {
             Character character = eventArgs.Character;
-            CharacterPreferencesModel preferences = characterService.GetCharacterPreferences(character);
 
             var eventArgsToSend = new OnPlayerCashUpdateEventArgs
             {
                 Player = eventArgs.Player,
-                CurrencyId = preferences.DefaultCurrencyId,
+                CurrencyId = character.GetPreferences().GetDefaultCurrencyId(),
             };
             await serverEventAggregator.PublishAsync(eventArgsToSend);
         }

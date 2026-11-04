@@ -1,13 +1,11 @@
 ﻿using OpenRP.Framework.Database.Models;
 using OpenRP.Framework.Database.Services;
 using OpenRP.Framework.Features.Characters.Components;
-using OpenRP.Framework.Features.Characters.Services;
 using OpenRP.Framework.Features.Players.Extensions;
 using OpenRP.Framework.Shared.Chat.Enums;
 using OpenRP.Framework.Shared.Chat.Extensions;
 using OpenRP.Framework.Shared.Chat.Services;
 using OpenRP.Framework.Shared.ServerEvents.Services;
-using OpenRP.Boilerplate.LegacyFeatures.Characters.Services;
 using OpenRP.Boilerplate.LegacyFeatures.Currencies.Components;
 using OpenRP.Boilerplate.LegacyFeatures.Currencies.Entities;
 using OpenRP.Boilerplate.LegacyFeatures.Inventories.Helpers;
@@ -21,7 +19,7 @@ namespace OpenRP.Boilerplate.LegacyFeatures.Currencies.Systems
     public class CurrencySystem : ISystem
     {
         [Timer(2500)]
-        public void ProcessBillTransaction(IEntityManager entityManager, ICharacterService characterService, IInventoryService inventoryService, IServerEventAggregator serverEventAggregator, ITempCharacterService tempCharacterService, IChatService chatService, IDataMemoryService dataMemoryService)
+        public void ProcessBillTransaction(IEntityManager entityManager, ICharacterInventoryService characterInventoryService, IInventoryService inventoryService, IServerEventAggregator serverEventAggregator, IChatService chatService, IDataMemoryService dataMemoryService)
         {
             foreach (BillTransactionBetweenPlayers billTransactionBetweenPlayers in entityManager.GetComponents<BillTransactionBetweenPlayers>())
             {
@@ -43,20 +41,17 @@ namespace OpenRP.Boilerplate.LegacyFeatures.Currencies.Systems
                         senderPlayer.SendPlayerInfoMessage(PlayerInfoMessageType.INFO, "The transaction has completed.");
                         receiverPlayer.SendPlayerInfoMessage(PlayerInfoMessageType.INFO, "The transaction has completed.");
 
-                        CharacterPreferencesModel senderPreferences = characterService.GetCharacterPreferences(senderCharacter);
-                        CharacterPreferencesModel receiverPreferences = characterService.GetCharacterPreferences(receiverCharacter);
-
                         var eventArgsToSend = new OnPlayerCashUpdateEventArgs
                         {
                             Player = senderPlayer,
-                            CurrencyId = senderPreferences.DefaultCurrencyId,
+                            CurrencyId = senderCharacter.GetPreferences().GetDefaultCurrencyId(),
                         };
                         serverEventAggregator.PublishAsync(eventArgsToSend);
 
                         var eventArgsToSendTwo = new OnPlayerCashUpdateEventArgs
                         {
                             Player = receiverPlayer,
-                            CurrencyId = receiverPreferences.DefaultCurrencyId,
+                            CurrencyId = receiverCharacter.GetPreferences().GetDefaultCurrencyId(),
                         };
                         serverEventAggregator.PublishAsync(eventArgsToSendTwo);
 
@@ -68,11 +63,11 @@ namespace OpenRP.Boilerplate.LegacyFeatures.Currencies.Systems
                         continue;
                     }
 
-                    bool senderHasWallet = characterService.GetCharacterDefaultWallet(senderCharacter,
-                        tempCharacterService.GetCharacterInventory(receiverCharacter), dataMemoryService) != null;
+                    bool senderHasWallet = characterInventoryService.GetCharacterDefaultWallet(
+                        characterInventoryService.GetCharacterInventoryModel(senderCharacter), dataMemoryService) != null;
 
-                    bool receiverHasWallet = characterService.GetCharacterDefaultWallet(receiverCharacter,
-                        tempCharacterService.GetCharacterInventory(receiverCharacter), dataMemoryService) != null;
+                    bool receiverHasWallet = characterInventoryService.GetCharacterDefaultWallet(
+                        characterInventoryService.GetCharacterInventoryModel(receiverCharacter), dataMemoryService) != null;
 
                     InventoryItemModel itemToRemove = billsTransaction.BillsRemoved[billTransactionBetweenPlayers.TransactionIndex];
                     InventoryItemModel itemToAdd = billsTransaction.BillsAdded[billTransactionBetweenPlayers.TransactionIndex];

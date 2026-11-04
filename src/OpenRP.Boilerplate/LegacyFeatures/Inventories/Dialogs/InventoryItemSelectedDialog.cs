@@ -12,7 +12,6 @@ using OpenRP.Framework.Shared.Dialogs;
 using OpenRP.Framework.Shared.Dialogs.Enums;
 using OpenRP.Framework.Shared.Dialogs.Helpers;
 using OpenRP.Boilerplate.Data;
-using OpenRP.Boilerplate.LegacyFeatures.Characters.Services;
 using OpenRP.Boilerplate.LegacyFeatures.DroppedItems.Services;
 using OpenRP.Boilerplate.LegacyFeatures.Inventories.Components;
 using OpenRP.Boilerplate.LegacyFeatures.Inventories.Helpers;
@@ -26,7 +25,7 @@ namespace OpenRP.Boilerplate.LegacyFeatures.Inventories.Dialogs
 {
     public class InventoryItemSelectedDialog
     {
-        public static void Open(Player player, OpenInventoryComponent openInventoryComponent, IDialogService dialogService, IEntityManager entityManager, IColAndreasService colAndreasService, ICharacterService characterService, IDroppedItemService droppedItemService, IInventoryService inventoryService, IChatService chatService, IDataMemoryService dataMemoryService)
+        public static void Open(Player player, OpenInventoryComponent openInventoryComponent, IDialogService dialogService, IEntityManager entityManager, IColAndreasService colAndreasService, ICharacterInventoryService characterInventoryService, IDroppedItemService droppedItemService, IInventoryService inventoryService, IChatService chatService, IDataMemoryService dataMemoryService)
         {
             ListDialog listDialog = new ListDialog(DialogHelper.GetTitle(openInventoryComponent.selectedInventoryItem.GetItem(dataMemoryService).Name), "Select", "Cancel");
 
@@ -82,7 +81,7 @@ namespace OpenRP.Boilerplate.LegacyFeatures.Inventories.Dialogs
                             case "Wear":
                                 if (openInventoryComponent.selectedInventoryItem.GetItem(dataMemoryService).IsItemSkin())
                                 {
-                                    if (characterService.SetCharacterWearingInventorySkin(character, openInventoryComponent.selectedInventoryItem))
+                                    if (characterInventoryService.SetCharacterWearingInventorySkin(character, openInventoryComponent.selectedInventoryItem))
                                     {
                                         chatService.SendPlayerChatMessage(player, PlayerChatMessageType.ME, "changed their clothes.");
                                         player.SendPlayerInfoMessage(PlayerInfoMessageType.INFO, "You have succesfully changed your clothes.");
@@ -94,7 +93,7 @@ namespace OpenRP.Boilerplate.LegacyFeatures.Inventories.Dialogs
                                 }
                                 else if (openInventoryComponent.selectedInventoryItem.GetItem(dataMemoryService).IsItemAttachment())
                                 {
-                                    if (characterService.SetCharacterWearingInventorySkin(character, openInventoryComponent.selectedInventoryItem))
+                                    if (characterInventoryService.SetCharacterWearingInventorySkin(character, openInventoryComponent.selectedInventoryItem))
                                     {
                                         chatService.SendPlayerChatMessage(player, PlayerChatMessageType.ME, "changed their clothes.");
                                         player.SendPlayerInfoMessage(PlayerInfoMessageType.INFO, "You have succesfully changed your clothes.");
@@ -107,7 +106,7 @@ namespace OpenRP.Boilerplate.LegacyFeatures.Inventories.Dialogs
                                 break;
                             case "Open":
                                 InventoryModel itemInventory = openInventoryComponent.selectedInventoryItem.GetItemInventory(dataMemoryService);
-                                InventoryDialog.Open(player, itemInventory, dialogService, entityManager, colAndreasService, characterService, droppedItemService, inventoryService, chatService, dataMemoryService);
+                                InventoryDialog.Open(player, itemInventory, dialogService, entityManager, colAndreasService, characterInventoryService, droppedItemService, inventoryService, chatService, dataMemoryService);
                                 break;
                             case "Description":
                                 string description = String.Empty;
@@ -126,7 +125,7 @@ namespace OpenRP.Boilerplate.LegacyFeatures.Inventories.Dialogs
                             case "Set As Default":
                                 if (openInventoryComponent.selectedInventoryItem.GetItem(dataMemoryService).IsItemWallet()) // Wallets
                                 {
-                                    characterService.SetCharacterDefaultWallet(character, openInventoryComponent.selectedInventoryItem);
+                                    characterInventoryService.SetCharacterDefaultWallet(character, openInventoryComponent.selectedInventoryItem);
                                 }
                                 break;
                             case "Drop":

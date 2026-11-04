@@ -153,7 +153,7 @@ namespace OpenRP.Boilerplate.LegacyFeatures.Commands.Commands
         #region Helper Methods
         private List<ServerCommandInfo> GetAvailableCommands(Character character, IPermissionService permissionManager)
         {
-            var permissions = permissionManager.GetCharacterPermissionsModels(character.GetDatabaseId());
+            var permissions = permissionManager.GetCharacterPermissionsModels(character.GetId());
             var permissionNames = permissions.Select(p => p.Name).ToHashSet();
 
             return ServerCommandCache.CachedServerCommands
