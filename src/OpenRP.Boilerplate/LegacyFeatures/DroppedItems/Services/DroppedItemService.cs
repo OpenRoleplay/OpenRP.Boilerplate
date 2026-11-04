@@ -27,11 +27,10 @@ namespace OpenRP.Boilerplate.LegacyFeatures.DroppedItems.Services
         private ITryg3DService _tryg3DService;
         private IColAndreasService _colAndreasService;
         private IInventoryService _inventoryService;
-        private ICharacterInventoryService _characterInventoryService;
         private IServerEventAggregator _serverEventAggregator;
         private IDataMemoryService _dataMemoryService;
 
-        public DroppedItemService(IEntityManager entityManager, IStreamerService streamerService, IVirtualWorldManager virtualWorldManager, ITryg3DService tryg3DService, IColAndreasService colAndreasService, IInventoryService inventoryService, ICharacterInventoryService characterInventoryService, IServerEventAggregator serverEventAggregator, IDataMemoryService dataMemoryService)
+        public DroppedItemService(IEntityManager entityManager, IStreamerService streamerService, IVirtualWorldManager virtualWorldManager, ITryg3DService tryg3DService, IColAndreasService colAndreasService, IInventoryService inventoryService, IServerEventAggregator serverEventAggregator, IDataMemoryService dataMemoryService)
         {
             _entityManager = entityManager;
             _streamerService = streamerService;
@@ -39,7 +38,6 @@ namespace OpenRP.Boilerplate.LegacyFeatures.DroppedItems.Services
             _tryg3DService = tryg3DService;
             _colAndreasService = colAndreasService;
             _inventoryService = inventoryService;
-            _characterInventoryService = characterInventoryService;
             _serverEventAggregator = serverEventAggregator;
             _dataMemoryService = dataMemoryService;
         }
@@ -69,7 +67,7 @@ namespace OpenRP.Boilerplate.LegacyFeatures.DroppedItems.Services
             EntityId droppedItemEntityId = DroppedItemEntities.GetDroppedItemId((int)droppedItemModel.Id);
             _entityManager.Create(droppedItemEntityId);
 
-            DroppedItem droppedItem = _entityManager.AddComponent<DroppedItem>(droppedItemEntityId, droppedItemModel, _inventoryService, _characterInventoryService);
+            DroppedItem droppedItem = _entityManager.AddComponent<DroppedItem>(droppedItemEntityId, droppedItemModel);
 
             // Place Dynamic Object
             int DroppedItemModel = 1575;

@@ -15,13 +15,13 @@ namespace OpenRP.Boilerplate.LegacyFeatures.ChickenCoop.Commands
     {
         [ServerCommand(PermissionGroups = new string[] { "Default" },
             Description = "Collect an egg from a chicken coop. Use this command to gather eggs if you're near a chicken coop.")]
-        public void CollectEgg(Player player, IEntityManager entityManager, ICharacterInventoryService characterInventoryService, IInventoryService inventoryService, IChickenCoopManager chickenCoopManager, IChatService chatService, IDataMemoryService dataMemoryService, IOpenCdnService openCdnService)
+        public void CollectEgg(Player player, IEntityManager entityManager, IChickenCoopManager chickenCoopManager, IChatService chatService, IOpenCdnService openCdnService)
         {
             foreach (ChickenCoop.Components.ChickenCoop chickenCoop in chickenCoopManager.GetAllChickenCoops())
             {
                 if(chickenCoop.IsPlayerNearby(player))
                 {
-                    chickenCoop.CollectEgg(player, entityManager, characterInventoryService, inventoryService, chatService, dataMemoryService, openCdnService);
+                    chickenCoop.CollectEgg(player, entityManager, chatService, openCdnService);
                 } else
                 {
                     player.SendPlayerInfoMessage(PlayerInfoMessageType.ERROR, "You must be near a chicken coop to do this command!");

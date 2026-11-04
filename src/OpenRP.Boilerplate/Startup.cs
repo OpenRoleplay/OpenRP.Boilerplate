@@ -6,7 +6,6 @@ using Microsoft.Extensions.Options;
 using OpenRP.Boilerplate.Configuration;
 using OpenRP.Boilerplate.Data;
 using OpenRP.Boilerplate.LegacyFeatures.ChickenCoop.Services;
-using OpenRP.Boilerplate.LegacyFeatures.Currencies.Services;
 using OpenRP.Boilerplate.LegacyFeatures.DroppedItems.Services;
 using OpenRP.Boilerplate.LegacyFeatures.Factions.Services;
 using OpenRP.Boilerplate.LegacyFeatures.Inventories.Services;
@@ -54,9 +53,7 @@ namespace OpenRP.Boilerplate
                 .AddSingleton<IColAndreasService, ColAndreasService>()
                 .AddSingleton<ITryg3DService, Tryg3DService>()
                 .AddOpenRoleplayFramework()
-                .AddTransient<ICharacterInventoryService, CharacterInventoryService>()
                 .AddTransient<ICharacterVehicleManager, CharacterVehicleManager>()
-                .AddTransient<ICurrencyService, CurrencyService>()
                 .AddTransient<IInventoryService, InventoryService>()
                 .AddSingleton<IDroppedItemService, DroppedItemService>()
                 .AddSingleton<IFactionManager, FactionManager>()

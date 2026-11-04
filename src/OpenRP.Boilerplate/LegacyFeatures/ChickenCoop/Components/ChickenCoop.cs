@@ -13,11 +13,14 @@ using OpenRP.Framework.Shared.Chat.Services;
 using OpenRP.Framework.Database.Services;
 using OpenRP.Framework.Features.CDN.Services;
 using OpenRP.Framework.Features.Items.Components;
+using OpenRP.Framework.Features.Inventories.Components;
 
 namespace OpenRP.Boilerplate.LegacyFeatures.ChickenCoop.Components
 {
     public class ChickenCoop : Component
     {
+        private const ulong EggItemId = 36;
+
         IStreamerService _streamerService;
         DynamicTextLabel _textLabel;
         DynamicObject _objectLinkedTo;
@@ -90,16 +93,15 @@ namespace OpenRP.Boilerplate.LegacyFeatures.ChickenCoop.Components
             return false;
         }
 
-        public void CollectEgg(Player player, IEntityManager entityManager, ICharacterInventoryService characterInventoryService, IInventoryService inventoryService, IChatService chatService, IDataMemoryService dataMemoryService, IOpenCdnService openCdnService)
+        public void CollectEgg(Player player, IEntityManager entityManager, IChatService chatService, IOpenCdnService openCdnService)
         {
             if(player.IsPlayerPlayingAsCharacter())
             {
                 Character character = player.GetComponent<Character>();
-                InventoryModel characterInventory = characterInventoryService.GetCharacterInventoryModel(character);
-                ItemModel eggItem = entityManager.GetComponents<Item>().FirstOrDefault(i => i.GetId() == 36).GetItemModel();
-                InventoryItemModel eggItemToAdd = inventoryService.PrepareItem(characterInventory.Id, eggItem, 1);
+                Inventory? characterInventory = character.GetInventory();
+                Item? eggItem = entityManager.GetComponents<Item>().FirstOrDefault(i => i.GetId() == EggItemId);
 
-                if(eggItemToAdd.DoesInventoryItemFitInInventory(characterInventory, 1, dataMemoryService))
+                if(characterInventory != null && eggItem != null && characterInventory.DoesItemFit(eggItem, 1))
                 {
                     if (player.SpecialAction == SpecialAction.Duck)
                     {
@@ -127,7 +129,7 @@ namespace OpenRP.Boilerplate.LegacyFeatures.ChickenCoop.Components
                                                 break;
                                             default:
                                                 player.SendPlayerInfoMessage(PlayerInfoMessageType.INFO, "You successfully collected an egg without disturbing the coop.");
-                                                inventoryService.AddItem(eggItemToAdd);
+                                                characterInventory.AddItem(eggItem, 1);
                                                 _eggs--;
                                                 UpdateTextLabel();
                                                 collectEggTimer.Stop();

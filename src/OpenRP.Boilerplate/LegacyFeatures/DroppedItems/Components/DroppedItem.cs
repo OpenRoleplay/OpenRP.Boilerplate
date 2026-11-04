@@ -1,16 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OpenRP.Framework.Database.Models;
-using OpenRP.Framework.Database.Services;
 using OpenRP.Framework.Features.Characters.Components;
+using OpenRP.Framework.Features.Inventories.Components;
+using OpenRP.Framework.Features.Inventories.Entities;
+using OpenRP.Framework.Features.Inventories.Helpers;
+using OpenRP.Framework.Features.Items.Components;
+using OpenRP.Framework.Features.Items.Entities;
 using OpenRP.Framework.Features.Players.Extensions;
 using OpenRP.Framework.Shared.Chat.Enums;
 using OpenRP.Framework.Shared.Chat.Extensions;
-using OpenRP.Boilerplate.LegacyFeatures.Inventories.Helpers;
-using OpenRP.Boilerplate.LegacyFeatures.Inventories.Services;
+using OpenRP.Boilerplate.Data;
 using SampSharp.Entities;
 using SampSharp.Entities.SAMP;
 using OpenRP.Streamer;
-using OpenRP.Boilerplate.Data;
+using System.Linq;
 
 namespace OpenRP.Boilerplate.LegacyFeatures.DroppedItems.Components
 {
@@ -19,13 +22,9 @@ namespace OpenRP.Boilerplate.LegacyFeatures.DroppedItems.Components
         private ulong _databaseId;
         private bool _pickupable;
         private DroppedInventoryItemModel _cachedDroppedItemModel;
-        private IInventoryService _inventoryService;
-        private ICharacterInventoryService _characterInventoryService;
-        public DroppedItem(DroppedInventoryItemModel droppedItemModel, IInventoryService inventoryService, ICharacterInventoryService characterInventoryService)
+        public DroppedItem(DroppedInventoryItemModel droppedItemModel)
         {
             _cachedDroppedItemModel = droppedItemModel;
-            _inventoryService = inventoryService;
-            _characterInventoryService = characterInventoryService;
             _databaseId = _cachedDroppedItemModel.Id;
             _pickupable = true;
         }
@@ -56,7 +55,7 @@ namespace OpenRP.Boilerplate.LegacyFeatures.DroppedItems.Components
             return false;
         }
 
-        public bool Pickup(Player player, IDataMemoryService dataMemoryService)
+        public bool Pickup(Player player)
         {
             if (!IsPlayerNearby(player))
             {
@@ -70,31 +69,41 @@ namespace OpenRP.Boilerplate.LegacyFeatures.DroppedItems.Components
                 return false;
             }
 
-            _pickupable = false;
-
+            InventoryItemModel droppedInventoryItem = _cachedDroppedItemModel.InventoryItem;
             Character character = player.GetPlayerCurrentlyPlayingAsCharacter();
-            InventoryModel inventoryModel = _characterInventoryService.GetCharacterInventoryModel(character);
-
-            uint amount = _cachedDroppedItemModel.InventoryItem.Amount;
-
-            // Create a new instance for the player's inventory, copying relevant properties
-            InventoryItemModel newInventoryItem = _inventoryService.PrepareItem(inventoryModel.Id, _cachedDroppedItemModel.InventoryItem, _cachedDroppedItemModel.InventoryItem.Amount);
-
-            InventoryItemModel itemAdded = _inventoryService.AddItem(newInventoryItem);
-
-            // Use a new DataContext to delete the dropped item record
-            using (DataContext context = new DataContext())
+            Inventory? inventory = character.GetInventory();
+            Item? item = Manager.GetComponent<Item>(ItemEntities.GetItemId((int)droppedInventoryItem.ItemId));
+            if (inventory == null || item == null || !inventory.AddItem(item, droppedInventoryItem.Amount, ItemAdditionalData.Parse(droppedInventoryItem.AdditionalData)))
             {
-                context.InventoryItems
-                    .Where(invItem => invItem.Id == _cachedDroppedItemModel.InventoryItemId)
-                    .ExecuteDelete();
+                player.SendPlayerInfoMessage(PlayerInfoMessageType.ERROR, "You don't have enough space in your inventory to pick this up!");
+                return false;
             }
 
-            player.SendPlayerInfoMessage(PlayerInfoMessageType.INFO, $"You have picked up {amount}x {itemAdded.GetItem(dataMemoryService).Name}.");
+            _pickupable = false;
+            DeleteDroppedInventoryItem(droppedInventoryItem.Id);
+            player.SendPlayerInfoMessage(PlayerInfoMessageType.INFO, $"You have picked up {droppedInventoryItem.Amount}x {item.GetName()}.");
 
             DestroyEntity();
             return true;
         }
 
+        /// <summary>
+        /// Removes the dropped item from the world inventory, in the database and in memory.
+        /// </summary>
+        private void DeleteDroppedInventoryItem(ulong inventoryItemId)
+        {
+            using (DataContext context = new DataContext())
+            {
+                context.InventoryItems
+                    .Where(invItem => invItem.Id == inventoryItemId)
+                    .ExecuteDelete();
+            }
+
+            EntityId inventoryItemEntityId = InventoryEntities.GetInventoryItemId((int)inventoryItemId);
+            if (Manager.Exists(inventoryItemEntityId))
+            {
+                Manager.Destroy(inventoryItemEntityId);
+            }
+        }
     }
 }
