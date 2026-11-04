@@ -9,7 +9,7 @@ using OpenRP.Boilerplate.LegacyFeatures.Inventories.Helpers;
 using OpenRP.Boilerplate.LegacyFeatures.Inventories.Services;
 using SampSharp.Entities;
 using SampSharp.Entities.SAMP;
-using SampSharp.Streamer.Entities;
+using OpenRP.Streamer;
 using OpenRP.Boilerplate.Data;
 
 namespace OpenRP.Boilerplate.LegacyFeatures.DroppedItems.Components

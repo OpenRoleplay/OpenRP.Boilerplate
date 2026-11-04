@@ -24,7 +24,7 @@ using OpenRP.Framework.Shared.ServerEvents.Extensions;
 using SampSharp.ColAndreas.Entities.Services;
 using SampSharp.Entities;
 using SampSharp.Entities.SAMP;
-using SampSharp.Streamer.Entities;
+using OpenRP.Streamer;
 using SampSharp.Tryg3D.Entities.Services;
 using System.Reflection;
 

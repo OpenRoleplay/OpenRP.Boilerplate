@@ -24,18 +24,13 @@
     <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
     <PackageReference Include="MySqlConnector" Version="2.4.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="OpenRP.Framework" Version="0.1.0-preview.2026.44.4" />
+    <PackageReference Include="OpenRP.Streamer" Version="0.1.0" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql.NetTopologySuite" Version="7.0.0" />
     <PackageReference Include="SampSharp.ColAndreas.Entities" Version="0.1.1" />
     <PackageReference Include="SampSharp.Core" Version="0.11.1" />
     <PackageReference Include="SampSharp.Entities" Version="0.11.1" />
-    <PackageReference Include="SampSharp.Streamer.Entities" Version="0.10.0" />
     <PackageReference Include="SampSharp.Tryg3D.Entities" Version="0.1.0" />
-  </ItemGroup>
-
-  <!-- TEMPORARY: local Framework for testing unpublished changes. Before committing, replace this with
-       <PackageReference Include="OpenRP.Framework" Version="(the newly published version)" /> -->
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\OpenRP.Framework\src\OpenRP.Framework\OpenRP.Framework.csproj" />
   </ItemGroup>
 
 </Project>

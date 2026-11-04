@@ -1,6 +1,6 @@
 ﻿using OpenRP.Boilerplate.Data;
 using SampSharp.Entities;
-using SampSharp.Streamer.Entities;
+using OpenRP.Streamer;
 using OpenRP.Boilerplate.LegacyFeatures.Properties.Components;
 using OpenRP.Boilerplate.LegacyFeatures.Properties.Entities;
 using OpenRP.Boilerplate.LegacyFeatures.Properties.Services;
