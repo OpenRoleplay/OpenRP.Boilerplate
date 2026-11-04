@@ -9,11 +9,9 @@ using SampSharp.Entities.SAMP;
 using SampSharp.Tryg3D.Entities.Services;
 using SampSharp.ColAndreas.Entities.Services;
 using OpenRP.Boilerplate.LegacyFeatures.Inventories.Services;
-using OpenRP.Boilerplate.LegacyFeatures.Characters.Services;
 using OpenRP.Framework.Database.Models;
 using OpenRP.Framework.Features.VirtualWorlds.Services;
 using OpenRP.Framework.Features.Characters.Components;
-using OpenRP.Framework.Features.Characters.Services;
 using OpenRP.Framework.Shared.ServerEvents.Services;
 using OpenRP.Framework.Features.Players.Extensions;
 using OpenRP.Framework.Database.Services;
@@ -29,12 +27,11 @@ namespace OpenRP.Boilerplate.LegacyFeatures.DroppedItems.Services
         private ITryg3DService _tryg3DService;
         private IColAndreasService _colAndreasService;
         private IInventoryService _inventoryService;
-        private ICharacterService _characterService;
+        private ICharacterInventoryService _characterInventoryService;
         private IServerEventAggregator _serverEventAggregator;
-        private ITempCharacterService _tempCharacterService;
         private IDataMemoryService _dataMemoryService;
 
-        public DroppedItemService(IEntityManager entityManager, IStreamerService streamerService, IVirtualWorldManager virtualWorldManager, ITryg3DService tryg3DService, IColAndreasService colAndreasService, IInventoryService inventoryService, ICharacterService characterService, IServerEventAggregator serverEventAggregator, ITempCharacterService tempCharacterService, IDataMemoryService dataMemoryService)
+        public DroppedItemService(IEntityManager entityManager, IStreamerService streamerService, IVirtualWorldManager virtualWorldManager, ITryg3DService tryg3DService, IColAndreasService colAndreasService, IInventoryService inventoryService, ICharacterInventoryService characterInventoryService, IServerEventAggregator serverEventAggregator, IDataMemoryService dataMemoryService)
         {
             _entityManager = entityManager;
             _streamerService = streamerService;
@@ -42,9 +39,8 @@ namespace OpenRP.Boilerplate.LegacyFeatures.DroppedItems.Services
             _tryg3DService = tryg3DService;
             _colAndreasService = colAndreasService;
             _inventoryService = inventoryService;
-            _characterService = characterService;
+            _characterInventoryService = characterInventoryService;
             _serverEventAggregator = serverEventAggregator;
-            _tempCharacterService = tempCharacterService;
             _dataMemoryService = dataMemoryService;
         }
 
@@ -73,7 +69,7 @@ namespace OpenRP.Boilerplate.LegacyFeatures.DroppedItems.Services
             EntityId droppedItemEntityId = DroppedItemEntities.GetDroppedItemId((int)droppedItemModel.Id);
             _entityManager.Create(droppedItemEntityId);
 
-            DroppedItem droppedItem = _entityManager.AddComponent<DroppedItem>(droppedItemEntityId, droppedItemModel, _inventoryService, _characterService);
+            DroppedItem droppedItem = _entityManager.AddComponent<DroppedItem>(droppedItemEntityId, droppedItemModel, _inventoryService, _characterInventoryService);
 
             // Place Dynamic Object
             int DroppedItemModel = 1575;
@@ -259,11 +255,10 @@ namespace OpenRP.Boilerplate.LegacyFeatures.DroppedItems.Services
                 if(inventoryItem.GetItem(_dataMemoryService).IsItemCurrency())
                 {
                     Character character = player.GetPlayerCurrentlyPlayingAsCharacter();
-                    CharacterPreferencesModel preferences = _characterService.GetCharacterPreferences(character);
                     var eventArgsToSend = new OnPlayerCashUpdateEventArgs
                     {
                         Player = player,
-                        CurrencyId = preferences.DefaultCurrencyId,
+                        CurrencyId = character.GetPreferences().GetDefaultCurrencyId(),
                     };
                     _serverEventAggregator.PublishAsync(eventArgsToSend);
                 }

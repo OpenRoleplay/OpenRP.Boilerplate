@@ -1,5 +1,4 @@
-﻿using OpenRP.Boilerplate.LegacyFeatures.Characters.Helpers;
-using OpenRP.Framework.Features.Commands.Attributes;
+﻿using OpenRP.Framework.Features.Commands.Attributes;
 using OpenRP.Boilerplate.LegacyFeatures.Currencies.Components;
 using OpenRP.Boilerplate.LegacyFeatures.Inventories.Components;
 using SampSharp.Entities;
@@ -47,7 +46,7 @@ namespace OpenRP.Boilerplate.LegacyFeatures.Currencies.Commands
             Character receiverCharacter = player.GetPlayerCurrentlyPlayingAsCharacter();
 
             player.SendPlayerInfoMessage(PlayerInfoMessageType.INFO, "You have accepted the transaction. It will now start.");
-            billTransaction.sender.SendPlayerInfoMessage(PlayerInfoMessageType.INFO, $"{receiverCharacter.GetCharacterModel().GetCharacterName()} has accepted the transaction. It will now start.");
+            billTransaction.sender.SendPlayerInfoMessage(PlayerInfoMessageType.INFO, $"{receiverCharacter.GetName()} has accepted the transaction. It will now start.");
 
             //billTransaction.receiver.ToggleControllable(false);
             //billTransaction.sender.ToggleControllable(false);

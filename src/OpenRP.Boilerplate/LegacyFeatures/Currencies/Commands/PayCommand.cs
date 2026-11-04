@@ -1,5 +1,4 @@
 ﻿using OpenRP.Framework.Database.Models;
-using OpenRP.Boilerplate.LegacyFeatures.Characters.Helpers;
 using OpenRP.Framework.Features.Commands.Attributes;
 using OpenRP.Boilerplate.LegacyFeatures.Currencies.Components;
 using OpenRP.Boilerplate.LegacyFeatures.Currencies.Entities;
@@ -77,8 +76,8 @@ namespace OpenRP.Boilerplate.LegacyFeatures.Currencies.Commands
             billTransactionRecipient.currencyCode = currency_code;
             billTransactionRecipient.billsTransaction = billsTransaction;
 
-            player.SendPlayerInfoMessage(PlayerInfoMessageType.INFO, $"Sent a request to {receiverCharacter.GetCharacterModel().GetCharacterName()} to start a transaction.");
-            playerid.SendPlayerInfoMessage(PlayerInfoMessageType.INFO, $"{senderCharacter.GetCharacterModel().GetCharacterName()} has sent a request to start a transaction to transfer {currencyService.GetCurrencyFormat(currencyModel.Id, amount)} to you. Type /acceptpay to proceed.");
+            player.SendPlayerInfoMessage(PlayerInfoMessageType.INFO, $"Sent a request to {receiverCharacter.GetName()} to start a transaction.");
+            playerid.SendPlayerInfoMessage(PlayerInfoMessageType.INFO, $"{senderCharacter.GetName()} has sent a request to start a transaction to transfer {currencyService.GetCurrencyFormat(currencyModel.Id, amount)} to you. Type /acceptpay to proceed.");
         }
 
         [ServerCommand(PermissionGroups = new string[] { "Default" },

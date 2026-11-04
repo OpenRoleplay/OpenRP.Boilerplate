@@ -2,7 +2,6 @@
 using OpenRP.Framework.Database.Models;
 using OpenRP.Framework.Database.Services;
 using OpenRP.Framework.Features.Characters.Components;
-using OpenRP.Framework.Features.Characters.Services;
 using OpenRP.Framework.Features.Players.Extensions;
 using OpenRP.Framework.Shared.Chat.Enums;
 using OpenRP.Framework.Shared.Chat.Extensions;
@@ -21,12 +20,12 @@ namespace OpenRP.Boilerplate.LegacyFeatures.DroppedItems.Components
         private bool _pickupable;
         private DroppedInventoryItemModel _cachedDroppedItemModel;
         private IInventoryService _inventoryService;
-        private ITempCharacterService _characterService;
-        public DroppedItem(DroppedInventoryItemModel droppedItemModel, IInventoryService inventoryService, ITempCharacterService characterService)
+        private ICharacterInventoryService _characterInventoryService;
+        public DroppedItem(DroppedInventoryItemModel droppedItemModel, IInventoryService inventoryService, ICharacterInventoryService characterInventoryService)
         {
             _cachedDroppedItemModel = droppedItemModel;
             _inventoryService = inventoryService;
-            _characterService = characterService;
+            _characterInventoryService = characterInventoryService;
             _databaseId = _cachedDroppedItemModel.Id;
             _pickupable = true;
         }
@@ -74,7 +73,7 @@ namespace OpenRP.Boilerplate.LegacyFeatures.DroppedItems.Components
             _pickupable = false;
 
             Character character = player.GetPlayerCurrentlyPlayingAsCharacter();
-            InventoryModel inventoryModel = _characterService.GetCharacterInventory(character);
+            InventoryModel inventoryModel = _characterInventoryService.GetCharacterInventoryModel(character);
 
             uint amount = _cachedDroppedItemModel.InventoryItem.Amount;
 

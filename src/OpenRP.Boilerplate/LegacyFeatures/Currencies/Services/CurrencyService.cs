@@ -6,7 +6,6 @@ using OpenRP.Framework.Shared.Chat.Enums;
 using OpenRP.Framework.Shared.Chat.Extensions;
 using OpenRP.Framework.Shared.ServerEvents.Services;
 using OpenRP.Boilerplate.Data;
-using OpenRP.Boilerplate.LegacyFeatures.Characters.Services;
 using OpenRP.Boilerplate.LegacyFeatures.Currencies.Entities;
 using OpenRP.Boilerplate.LegacyFeatures.Inventories.Helpers;
 using OpenRP.Boilerplate.LegacyFeatures.Inventories.Services;
@@ -18,15 +17,15 @@ namespace OpenRP.Boilerplate.LegacyFeatures.Currencies.Services
 {
     public class CurrencyService : ICurrencyService
     {
-        private readonly ICharacterService _characterService;
+        private readonly ICharacterInventoryService _characterInventoryService;
         private readonly IInventoryService _inventoryService;
         private readonly IServerEventAggregator _serverEventAggregator;
         private readonly IDataMemoryService _dataMemoryService;
         private readonly DataContext _dataContext;
 
-        public CurrencyService(ICharacterService characterService, IInventoryService inventoryService, DataContext dataContext, IServerEventAggregator serverEventAggregator, IDataMemoryService dataMemoryService) 
+        public CurrencyService(ICharacterInventoryService characterInventoryService, IInventoryService inventoryService, DataContext dataContext, IServerEventAggregator serverEventAggregator, IDataMemoryService dataMemoryService)
         {
-            _characterService = characterService;
+            _characterInventoryService = characterInventoryService;
             _inventoryService = inventoryService;
             _dataContext = dataContext;
             _serverEventAggregator = serverEventAggregator;
@@ -53,7 +52,7 @@ namespace OpenRP.Boilerplate.LegacyFeatures.Currencies.Services
             Character character = player.GetComponent<Character>();
 
             // Retrieve the character's wallet inventory for currency transactions
-            InventoryModel wallet = _characterService.GetCharacterWallet(character, _dataMemoryService);
+            InventoryModel wallet = _characterInventoryService.GetCharacterWallet(character, _dataMemoryService);
             if (wallet == null)
             {
                 throw new InvalidOperationException("Character wallet not found.");
@@ -240,8 +239,8 @@ namespace OpenRP.Boilerplate.LegacyFeatures.Currencies.Services
             Character destCharacter = destPlayer.GetPlayerCurrentlyPlayingAsCharacter();
 
             // Get wallets
-            var sourceWallet = _characterService.GetCharacterWallet(sourceCharacter, _dataMemoryService);
-            var destWallet = _characterService.GetCharacterWallet(destCharacter, _dataMemoryService);
+            var sourceWallet = _characterInventoryService.GetCharacterWallet(sourceCharacter, _dataMemoryService);
+            var destWallet = _characterInventoryService.GetCharacterWallet(destCharacter, _dataMemoryService);
             if (sourceWallet == null || destWallet == null)
             {
                 sourcePlayer.SendPlayerInfoMessage(PlayerInfoMessageType.ERROR, "Either you or the recipient do not appear to have a wallet or inventory!");
@@ -394,7 +393,7 @@ namespace OpenRP.Boilerplate.LegacyFeatures.Currencies.Services
 
         public List<InventoryItemModel> GetCharacterInventoryCurrencyUnits(Character character)
         {
-            return _characterService.GetCharacterWallet(character, _dataMemoryService).GetInventoryItems().Where(i => i.GetItem(_dataMemoryService).IsItemCurrency()).ToList();
+            return _characterInventoryService.GetCharacterWallet(character, _dataMemoryService).GetInventoryItems().Where(i => i.GetItem(_dataMemoryService).IsItemCurrency()).ToList();
         }
 
         public string GetCurrencyFormat(ulong currencyId, decimal amount)
@@ -417,7 +416,7 @@ namespace OpenRP.Boilerplate.LegacyFeatures.Currencies.Services
                     .ToDictionary(cu => cu.Id, cu => cu.UnitValue);
 
                 // Get the character's wallet inventory
-                var walletInventory = _characterService.GetCharacterWallet(character, _dataMemoryService);
+                var walletInventory = _characterInventoryService.GetCharacterWallet(character, _dataMemoryService);
                 if (walletInventory == null)
                     return 0;
 
