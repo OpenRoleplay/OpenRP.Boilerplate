@@ -14,13 +14,13 @@ namespace OpenRP.Boilerplate.LegacyFeatures.DroppedItems.Commands
         [ServerCommand(PermissionGroups = new string[] { "Default" },
             Description = "Pickup a dropped item from the ground.",
             CommandGroups = new string[] { "Inventory" })]
-        public async void Pickup(Player player, IDroppedItemService droppedItemService, IDataMemoryService dataMemoryService)
+        public void Pickup(Player player, IDroppedItemService droppedItemService)
         {
             foreach(DroppedItem droppedItem in droppedItemService.GetAllDroppedItems())
             {
                 if(droppedItem.IsPlayerNearby(player))
                 {
-                    droppedItem.Pickup(player, dataMemoryService);
+                    droppedItem.Pickup(player);
                     return;
                 }
             }

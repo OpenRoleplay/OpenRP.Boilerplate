@@ -11,7 +11,7 @@ using OpenRP.Framework.Shared.Chat.Extensions;
 using OpenRP.Framework.Shared.Chat.Enums;
 using OpenRP.Framework.Shared;
 using OpenRP.Framework.Features.Players.Extensions;
-using OpenRP.Framework.Features.Permissions.Services;
+using OpenRP.Framework.Features.Permissions.Components;
 
 namespace OpenRP.Boilerplate.LegacyFeatures.Commands.Commands
 {
@@ -20,7 +20,7 @@ namespace OpenRP.Boilerplate.LegacyFeatures.Commands.Commands
         [ServerCommand(PermissionGroups = new[] { "Default" },
             Description = "Show a list of all commands you have access to.",
             CommandGroups = new[] { "Info" })]
-        public void Help(Player player, IPermissionService permissionManager, IDialogService dialogService)
+        public void Help(Player player, IDialogService dialogService)
         {
             Character character = player.GetPlayerCurrentlyPlayingAsCharacter();
             if (character == null)
@@ -29,7 +29,7 @@ namespace OpenRP.Boilerplate.LegacyFeatures.Commands.Commands
                 return;
             }
 
-            var availableCommands = GetAvailableCommands(character, permissionManager);
+            var availableCommands = GetAvailableCommands(character);
             if (!availableCommands.Any())
             {
                 player.SendPlayerInfoMessage(PlayerInfoMessageType.INFO, "No commands available.");
@@ -41,7 +41,6 @@ namespace OpenRP.Boilerplate.LegacyFeatures.Commands.Commands
                 ServerCommandGroupCache.CachedServerCommandGroups,
                 new HashSet<string>(availableCommands.Select(c => c.Name)),
                 dialogService,
-                permissionManager,
                 new Stack<CommandGroupNode>()
             );
         }
@@ -51,7 +50,6 @@ namespace OpenRP.Boilerplate.LegacyFeatures.Commands.Commands
             CommandGroupNode currentGroup,
             HashSet<string> availableCommandNames,
             IDialogService dialogService,
-            IPermissionService permissionManager,
             Stack<CommandGroupNode> navStack)
         {
             var accessibleSubgroups = currentGroup.Subgroups
@@ -82,7 +80,7 @@ namespace OpenRP.Boilerplate.LegacyFeatures.Commands.Commands
 
             dialogService.Show(player, dialog, response =>
                 HandleGroupDialogResponse(response, player, currentGroup, accessibleSubgroups,
-                    accessibleCommands, availableCommandNames, dialogService, permissionManager, navStack));
+                    accessibleCommands, availableCommandNames, dialogService, navStack));
         }
 
         private void HandleGroupDialogResponse(
@@ -93,7 +91,6 @@ namespace OpenRP.Boilerplate.LegacyFeatures.Commands.Commands
             List<ServerCommandInfo> accessibleCommands,
             HashSet<string> availableCommandNames,
             IDialogService dialogService,
-            IPermissionService permissionManager,
             Stack<CommandGroupNode> navStack)
         {
             if (response.Response == DialogResponse.LeftButton)
@@ -103,19 +100,19 @@ namespace OpenRP.Boilerplate.LegacyFeatures.Commands.Commands
                     // Subgroup selected
                     var selectedGroup = accessibleSubgroups[response.ItemIndex];
                     navStack.Push(currentGroup);
-                    ShowGroupDialog(player, selectedGroup, availableCommandNames, dialogService, permissionManager, navStack);
+                    ShowGroupDialog(player, selectedGroup, availableCommandNames, dialogService, navStack);
                 }
                 else
                 {
                     // Command selected
                     var commandIndex = response.ItemIndex - accessibleSubgroups.Count;
-                    ShowCommandDetails(player, accessibleCommands[commandIndex], dialogService, permissionManager, navStack);
+                    ShowCommandDetails(player, accessibleCommands[commandIndex], dialogService, navStack);
                 }
             }
             else if (response.Response == DialogResponse.RightButtonOrCancel && navStack.Any())
             {
                 // Navigate back
-                ShowGroupDialog(player, navStack.Pop(), availableCommandNames, dialogService, permissionManager, navStack);
+                ShowGroupDialog(player, navStack.Pop(), availableCommandNames, dialogService, navStack);
             }
         }
 
@@ -123,7 +120,6 @@ namespace OpenRP.Boilerplate.LegacyFeatures.Commands.Commands
             Player player,
             ServerCommandInfo command,
             IDialogService dialogService,
-            IPermissionService permissionManager,
             Stack<CommandGroupNode> navStack)
         {
             var dialog = new BetterMessageDialog("Back", "Close");
@@ -142,22 +138,25 @@ namespace OpenRP.Boilerplate.LegacyFeatures.Commands.Commands
                 {
                     Character character = player.GetPlayerCurrentlyPlayingAsCharacter();
                     ShowGroupDialog(player, navStack.Peek(),
-                        new HashSet<string>(GetAvailableCommands(character, permissionManager).Select(i => i.Name)),
+                        new HashSet<string>(GetAvailableCommands(character).Select(i => i.Name)),
                         dialogService,
-                        permissionManager,
                         navStack);
                 }
             });
         }
 
         #region Helper Methods
-        private List<ServerCommandInfo> GetAvailableCommands(Character character, IPermissionService permissionManager)
+        private List<ServerCommandInfo> GetAvailableCommands(Character character)
         {
-            var permissions = permissionManager.GetCharacterPermissionsModels(character.GetId());
-            var permissionNames = permissions.Select(p => p.Name).ToHashSet();
+            // The same permissions the command handler checks, so /help never lists a command you can't run.
+            CharacterPermissions? characterPermissions = character.GetComponent<CharacterPermissions>();
+            if (characterPermissions == null)
+            {
+                return new List<ServerCommandInfo>();
+            }
 
             return ServerCommandCache.CachedServerCommands
-                .Where(c => permissionNames.Contains($"cmd.{c.Name.ToLower()}"))
+                .Where(c => characterPermissions.DoesPlayerHaveCommandPermission(c.Name))
                 .DistinctBy(c => c.Name.ToLower())
                 .ToList();
         }

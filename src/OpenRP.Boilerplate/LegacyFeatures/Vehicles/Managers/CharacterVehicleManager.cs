@@ -1,48 +1,36 @@
 ﻿using OpenRP.Boilerplate.Data;
-using OpenRP.Boilerplate.LegacyFeatures.Inventories.Helpers;
-using OpenRP.Boilerplate.LegacyFeatures.Inventories.Services;
 using OpenRP.Framework.Features.Characters.Components;
-using OpenRP.Framework.Database.Services;
+using OpenRP.Framework.Features.Inventories.Components;
 using OpenRP.Framework.Features.Vehicles.Services;
+using System.Linq;
 
 namespace OpenRP.Boilerplate.LegacyFeatures.Vehicles.Managers
 {
     public class CharacterVehicleManager : ICharacterVehicleManager
     {
+        private const string VehicleIdKey = "VEHICLE_ID";
+
         private readonly DataContext _DataContext;
-        private readonly ICharacterInventoryService _characterInventoryService;
-        private readonly IDataMemoryService _dataMemoryService;
-        public CharacterVehicleManager(DataContext dataContext, ICharacterInventoryService characterInventoryService, IDataMemoryService dataMemoryService)
+        public CharacterVehicleManager(DataContext dataContext)
         {
             _DataContext = dataContext;
-            _characterInventoryService = characterInventoryService;
-            _dataMemoryService = dataMemoryService;
         }
 
         public bool HasVehicleKey(Character character, ulong vehicleId)
         {
-            // Get the player's inventory
-            var inventoryItems = _characterInventoryService.GetCharacterInventoryModel(character).GetInventoryItems();
-
-            // Check each item in the inventory for a car key matching the car ID
-            foreach (var item in inventoryItems)
+            Inventory? inventory = character.GetInventory();
+            if (inventory == null)
             {
-                // Skip if the item is null or doesn't have additional data
-                if (item == null || !item.GetItem(_dataMemoryService).IsItemVehicleKey() || string.IsNullOrEmpty(item.AdditionalData))
-                    continue;
-
-                // Parse the additional data to check if it's a car key and matches the car ID
-                ItemAdditionalData itemData = ItemAdditionalData.Parse(item.AdditionalData);
-
-                if (ulong.TryParse(itemData.GetString("VEHICLE_ID"), out ulong keyVehicleId) &&
-                    keyVehicleId == vehicleId)
-                {
-                    return true; // The player has the key for this car
-                }
+                return false;
             }
 
-            // No matching key found
-            return false;
+            return inventory.GetInventoryItems().Any(inventoryItem => IsKeyForVehicle(inventoryItem, vehicleId));
+        }
+
+        private static bool IsKeyForVehicle(InventoryItem inventoryItem, ulong vehicleId)
+        {
+            return inventoryItem.GetItem().IsItemVehicleKey()
+                && inventoryItem.GetAdditionalData().GetUlong(VehicleIdKey) == vehicleId;
         }
     }
 }
