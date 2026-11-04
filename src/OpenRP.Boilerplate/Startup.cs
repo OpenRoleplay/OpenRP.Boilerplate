@@ -6,9 +6,7 @@ using Microsoft.Extensions.Options;
 using OpenRP.Boilerplate.Configuration;
 using OpenRP.Boilerplate.Data;
 using OpenRP.Boilerplate.LegacyFeatures.ChickenCoop.Services;
-using OpenRP.Boilerplate.LegacyFeatures.DroppedItems.Services;
 using OpenRP.Boilerplate.LegacyFeatures.Factions.Services;
-using OpenRP.Boilerplate.LegacyFeatures.Inventories.Services;
 using OpenRP.Boilerplate.LegacyFeatures.Properties.Services;
 using OpenRP.Boilerplate.LegacyFeatures.Vehicles.Managers;
 using OpenRP.Framework.Database;
@@ -54,8 +52,6 @@ namespace OpenRP.Boilerplate
                 .AddSingleton<ITryg3DService, Tryg3DService>()
                 .AddOpenRoleplayFramework()
                 .AddTransient<ICharacterVehicleManager, CharacterVehicleManager>()
-                .AddTransient<IInventoryService, InventoryService>()
-                .AddSingleton<IDroppedItemService, DroppedItemService>()
                 .AddSingleton<IFactionManager, FactionManager>()
                 .AddSingleton<IPropertyManager, PropertyManager>()
                 .AddSingleton<IChickenCoopManager, ChickenCoopManager>()

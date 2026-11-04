@@ -1,6 +1,5 @@
 ﻿using SampSharp.Entities;
 using SampSharp.Entities.SAMP;
-using OpenRP.Boilerplate.LegacyFeatures.Inventories.Services;
 using OpenRP.Boilerplate.LegacyFeatures.ChickenCoop.Services;
 using OpenRP.Framework.Features.Commands.Attributes;
 using OpenRP.Framework.Shared.Chat.Extensions;

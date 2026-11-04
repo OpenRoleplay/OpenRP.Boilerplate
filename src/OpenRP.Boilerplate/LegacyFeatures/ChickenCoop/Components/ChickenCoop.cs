@@ -2,8 +2,6 @@
 using SampSharp.Entities;
 using OpenRP.Streamer;
 using OpenRP.Boilerplate.LegacyFeatures.Players.Helpers;
-using OpenRP.Boilerplate.LegacyFeatures.Inventories.Services;
-using OpenRP.Boilerplate.LegacyFeatures.Inventories.Helpers;
 using OpenRP.Framework.Database.Models;
 using OpenRP.Framework.Features.Characters.Components;
 using OpenRP.Framework.Shared.Chat.Extensions;
