@@ -1,7 +1,6 @@
 ﻿using SampSharp.Entities.SAMP;
 using SampSharp.Entities;
 using OpenRP.Streamer;
-using OpenRP.Boilerplate.LegacyFeatures.Players.Helpers;
 using OpenRP.Framework.Database.Models;
 using OpenRP.Framework.Features.Characters.Components;
 using OpenRP.Framework.Shared.Chat.Extensions;
@@ -59,7 +58,7 @@ namespace OpenRP.Boilerplate.LegacyFeatures.ChickenCoop.Components
                 _nextChickenBred = DateTime.Now.AddHours(1);
                 foreach (Player player in entityManager.GetComponents<Player>())
                 {
-                    player.PlayOpenCdnStream(openCdnService, "sfx", "chickenActivity.mp3", _objectLinkedTo.Position, 3.0f);
+                    openCdnService.Play(player, "sfx", "chickenActivity.mp3", _objectLinkedTo.Position, 3.0f);
                 }
             }
             if (DateTime.Now > _nextEggLaid)
@@ -74,7 +73,7 @@ namespace OpenRP.Boilerplate.LegacyFeatures.ChickenCoop.Components
                     {
                         foreach (Player player in entityManager.GetComponents<Player>())
                         {
-                            player.PlayOpenCdnStream(openCdnService, "sfx", "chickenEggPop.mp3", _objectLinkedTo.Position, 3.0f);
+                            openCdnService.Play(player, "sfx", "chickenEggPop.mp3", _objectLinkedTo.Position, 3.0f);
                         }
                     }
                 }
@@ -141,7 +140,7 @@ namespace OpenRP.Boilerplate.LegacyFeatures.ChickenCoop.Components
                                         player.SendPlayerInfoMessage(PlayerInfoMessageType.ERROR, "You failed to collect an egg without disturbing the coop.");
                                         foreach (Player player in entityManager.GetComponents<Player>())
                                         {
-                                            player.PlayOpenCdnStream(openCdnService, "sfx", "chickenAlarmCall.mp3", _objectLinkedTo.Position, 3.0f);
+                                            openCdnService.Play(player, "sfx", "chickenAlarmCall.mp3", _objectLinkedTo.Position, 3.0f);
                                         }
                                         collectEggTimer.Stop();
                                         collectEggTimer.Dispose();
@@ -191,7 +190,7 @@ namespace OpenRP.Boilerplate.LegacyFeatures.ChickenCoop.Components
                                         player.SendPlayerInfoMessage(PlayerInfoMessageType.ERROR, "You failed to collect an egg without disturbing the coop.");
                                         foreach (Player player in entityManager.GetComponents<Player>())
                                         {
-                                            player.PlayOpenCdnStream(openCdnService, "sfx", "chickenAlarmCall.mp3", _objectLinkedTo.Position, 3.0f);
+                                            openCdnService.Play(player, "sfx", "chickenAlarmCall.mp3", _objectLinkedTo.Position, 3.0f);
                                         }
                                         collectEggTimer.Stop();
                                         collectEggTimer.Dispose();
@@ -232,7 +231,7 @@ namespace OpenRP.Boilerplate.LegacyFeatures.ChickenCoop.Components
                                         player.SendPlayerInfoMessage(PlayerInfoMessageType.ERROR, "You failed to collect an egg without disturbing the coop.");
                                         foreach (Player player in entityManager.GetComponents<Player>())
                                         {
-                                            player.PlayOpenCdnStream(openCdnService, "sfx", "chickenAlarmCall.mp3", _objectLinkedTo.Position, 3.0f);
+                                            openCdnService.Play(player, "sfx", "chickenAlarmCall.mp3", _objectLinkedTo.Position, 3.0f);
                                         }
                                         collectEggTimer.Stop();
                                         collectEggTimer.Dispose();
