@@ -7,7 +7,6 @@ using OpenRP.Boilerplate.Configuration;
 using OpenRP.Boilerplate.Data;
 using OpenRP.Boilerplate.LegacyFeatures.ChickenCoop.Services;
 using OpenRP.Boilerplate.LegacyFeatures.Factions.Services;
-using OpenRP.Boilerplate.LegacyFeatures.Properties.Services;
 using OpenRP.Framework.Database;
 using OpenRP.Framework.Extensions;
 using OpenRP.Framework.Features.ActorConversations.Extensions;
@@ -51,7 +50,6 @@ namespace OpenRP.Boilerplate
                 .AddSingleton<ITryg3DService, Tryg3DService>()
                 .AddOpenRoleplayFramework()
                 .AddSingleton<IFactionManager, FactionManager>()
-                .AddSingleton<IPropertyManager, PropertyManager>()
                 .AddSingleton<IChickenCoopManager, ChickenCoopManager>()
                 .AddActorConversations(options =>
                 {
