@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using OpenRP.Boilerplate.Configuration;
 using OpenRP.Boilerplate.Data;
-using OpenRP.Boilerplate.LegacyFeatures.Factions.Services;
 using OpenRP.Framework.Database;
 using OpenRP.Framework.Extensions;
 using OpenRP.Framework.Features.ActorConversations.Extensions;
@@ -48,7 +47,6 @@ namespace OpenRP.Boilerplate
                 .AddSingleton<IColAndreasService, ColAndreasService>()
                 .AddSingleton<ITryg3DService, Tryg3DService>()
                 .AddOpenRoleplayFramework()
-                .AddSingleton<IFactionManager, FactionManager>()
                 .AddActorConversations(options =>
                 {
                     options.ChatGptApiKey = ConfigManager.Instance.Data.OpenAI_API;
