@@ -8,7 +8,6 @@ using OpenRP.Boilerplate.Data;
 using OpenRP.Boilerplate.LegacyFeatures.ChickenCoop.Services;
 using OpenRP.Boilerplate.LegacyFeatures.Factions.Services;
 using OpenRP.Boilerplate.LegacyFeatures.Properties.Services;
-using OpenRP.Boilerplate.LegacyFeatures.Vehicles.Managers;
 using OpenRP.Framework.Database;
 using OpenRP.Framework.Extensions;
 using OpenRP.Framework.Features.ActorConversations.Extensions;
@@ -51,7 +50,6 @@ namespace OpenRP.Boilerplate
                 .AddSingleton<IColAndreasService, ColAndreasService>()
                 .AddSingleton<ITryg3DService, Tryg3DService>()
                 .AddOpenRoleplayFramework()
-                .AddTransient<ICharacterVehicleManager, CharacterVehicleManager>()
                 .AddSingleton<IFactionManager, FactionManager>()
                 .AddSingleton<IPropertyManager, PropertyManager>()
                 .AddSingleton<IChickenCoopManager, ChickenCoopManager>()
