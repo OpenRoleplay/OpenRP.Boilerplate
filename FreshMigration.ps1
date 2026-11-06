@@ -1,8 +1,7 @@
 ﻿# This script resets the EF Core database to a fresh state.
 
 $projectPath = "src\OpenRP.Boilerplate"
-$migrationsPath = "$projectPath\Migrations"
-$buildPath = "src\OpenRP.Boilerplate\Server\gamemode\Debug\net6.0"
+$migrationsPath = "Migrations" # Relative to $projectPath, the script runs from there
 $initialMigrationName = "InitialCreate"
 
 Write-Host "Checking for EF Core CLI tool..."
