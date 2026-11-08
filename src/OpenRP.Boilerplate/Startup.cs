@@ -1,5 +1,6 @@
-﻿using EFCoreSecondLevelCacheInterceptor;
+using EFCoreSecondLevelCacheInterceptor;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -17,15 +18,21 @@ using OpenRP.Framework.Shared.ServerEvents.Extensions;
 using SampSharp.ColAndreas.Entities.Services;
 using SampSharp.Entities;
 using SampSharp.Entities.SAMP;
-using OpenRP.Streamer;
-using SampSharp.Tryg3D.Entities.Services;
+using SampSharp.Entities.SAMP.Commands;
+using SampSharp.OpenMp.Core;
+using OpenRP.OpenMp.Streamer;
 using System.Reflection;
 
 namespace OpenRP.Boilerplate
 {
-    public class Startup : IStartup
+    public class Startup : IEcsStartup
     {
-        public void Configure(IServiceCollection services) =>
+        public void Initialize(IStartupContext context)
+        {
+            context.UseEntities().UseCommands();
+        }
+
+        public void ConfigureServices(IServiceCollection services, IConfiguration configuration) =>
             // Register Database Context
             services
                 .AddDbContext<DataContext>(options =>
@@ -43,9 +50,8 @@ namespace OpenRP.Boilerplate
                 .AddEFSecondLevelCache(options =>
                     options.UseMemoryCacheProvider()
                         .CacheAllQueries(CacheExpirationMode.Absolute, TimeSpan.FromMinutes(15)))
-                .AddSingleton<IStreamerService, StreamerService>()
-                .AddSingleton<IColAndreasService, ColAndreasService>()
-                .AddSingleton<ITryg3DService, Tryg3DService>()
+                .AddStreamer()
+                .AddColAndreas()
                 .AddOpenRoleplayFramework()
                 .AddActorConversations(options =>
                 {
@@ -55,16 +61,13 @@ namespace OpenRP.Boilerplate
                 .AddWorldTime(options => { })
                 .AddCDN(options => { })
                 .AddDiscord(options => { })
-                .AddSystemsInAssembly()
-                .AddServerSystemsInAssembly();
+                // This assembly's ISystems are loaded by SampSharp itself, because it's the entry assembly.
+                .AddServerSystemsInAssembly(typeof(Startup).Assembly);
 
         public void Configure(IEcsBuilder builder)
         {
-            // TODO: Enable desired ECS system features
-            builder.EnableSampEvents()
-                .EnablePlayerCommands()
-                .EnableRconCommands()
-                .EnableStreamerEvents();
+            // Player and console commands are enabled by UseCommands() in Initialize.
+            builder.EnableStreamerEvents();
         }
     }
 }

@@ -1,36 +1,37 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <BaseOutputPath>$(SolutionDir)Server\gamemode\</BaseOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EFCoreSecondLevelCacheInterceptor" Version="4.9.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.20" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.20">
+    <PackageReference Include="EFCoreSecondLevelCacheInterceptor" Version="5.3.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.22" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.22">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.20">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.22">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.2" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.8" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.8" />
     <PackageReference Include="MySqlConnector" Version="2.4.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="OpenRP.Framework" Version="0.1.0-preview.2026.44.22" />
-    <PackageReference Include="OpenRP.Streamer" Version="0.1.0" />
-    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql.NetTopologySuite" Version="7.0.0" />
-    <PackageReference Include="SampSharp.ColAndreas.Entities" Version="0.1.1" />
-    <PackageReference Include="SampSharp.Core" Version="0.11.1" />
-    <PackageReference Include="SampSharp.Entities" Version="0.11.1" />
-    <PackageReference Include="SampSharp.Tryg3D.Entities" Version="0.1.0" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql.NetTopologySuite" Version="9.0.0" />
+    <PackageReference Include="EFCoreSecondLevelCacheInterceptor.MemoryCache" Version="5.3.2" />
+    <PackageReference Include="SampSharp.Sdk" Version="1.0.0-prerelease2" />
+  </ItemGroup>
+
+  <!-- Temporary: the SampSharp 1.0 Framework isn't published yet. Swap back to a PackageReference once it is. -->
+  <ItemGroup>
+    <ProjectReference Include="../../../OpenRP.Framework/src/OpenRP.Framework/OpenRP.Framework.csproj" />
   </ItemGroup>
 
 </Project>
