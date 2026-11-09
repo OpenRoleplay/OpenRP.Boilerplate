@@ -61,10 +61,8 @@ namespace OpenRP.Boilerplate
                 .AddStreamer()
                 .AddColAndreas()
                 .AddOpenRoleplayFramework()
-                .AddActorConversations(options =>
-                {
-                    options.ChatGptApiKey = ConfigManager.Instance.Data.OpenAI_API;
-                })
+                // Written by ActorRoleplay's generator, so it uses the key and model set below.
+                .AddActorConversations(options => { })
                 .AddActorRoleplay(options =>
                 {
                     options.OpenAiApiKey = ConfigManager.Instance.Data.OpenAI_API;
