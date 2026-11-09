@@ -9,6 +9,7 @@ using OpenRP.Boilerplate.Data;
 using OpenRP.Framework.Database;
 using OpenRP.Framework.Extensions;
 using OpenRP.Framework.Features.ActorConversations.Extensions;
+using OpenRP.Framework.Features.ActorRoleplay.Extensions;
 using OpenRP.Framework.Features.CDN.Extensions;
 using OpenRP.Framework.Features.Discord.Extensions;
 using OpenRP.Framework.Features.Vehicles.Services;
@@ -20,8 +21,10 @@ using SampSharp.Entities;
 using SampSharp.Entities.SAMP;
 using SampSharp.Entities.SAMP.Commands;
 using SampSharp.OpenMp.Core;
+using SampSharp.OpenMp.Core.Std;
 using OpenRP.OpenMp.Streamer;
 using System.Reflection;
+using System.Text;
 
 namespace OpenRP.Boilerplate
 {
@@ -29,6 +32,11 @@ namespace OpenRP.Boilerplate
     {
         public void Initialize(IStartupContext context)
         {
+            // SA-MP clients show and send chat as Windows-1252, but SampSharp defaults to UTF-8, which garbles anything
+            // outside plain ASCII (’ shows as â€™). Characters 1252 can't hold become "?".
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            StringViewMarshaller.Encoding = Encoding.GetEncoding(1252);
+
             context.UseEntities().UseCommands();
         }
 
@@ -56,6 +64,14 @@ namespace OpenRP.Boilerplate
                 .AddActorConversations(options =>
                 {
                     options.ChatGptApiKey = ConfigManager.Instance.Data.OpenAI_API;
+                })
+                .AddActorRoleplay(options =>
+                {
+                    options.OpenAiApiKey = ConfigManager.Instance.Data.OpenAI_API;
+                    if (!String.IsNullOrWhiteSpace(ConfigManager.Instance.Data.OpenAI_Model))
+                    {
+                        options.ModelId = ConfigManager.Instance.Data.OpenAI_Model;
+                    }
                 })
                 .AddWorldWeather(options => { })
                 .AddWorldTime(options => { })
