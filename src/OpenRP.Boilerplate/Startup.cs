@@ -10,6 +10,7 @@ using OpenRP.Framework.Database;
 using OpenRP.Framework.Extensions;
 using OpenRP.Framework.Features.ActorConversations.Extensions;
 using OpenRP.Framework.Features.ActorRoleplay.Extensions;
+using OpenRP.Framework.Features.EmergencyCalls.Extensions;
 using OpenRP.Framework.Features.CDN.Extensions;
 using OpenRP.Framework.Features.Discord.Extensions;
 using OpenRP.Framework.Features.Vehicles.Services;
@@ -69,6 +70,22 @@ namespace OpenRP.Boilerplate
                     if (!String.IsNullOrWhiteSpace(ConfigManager.Instance.Data.OpenAI_Model))
                     {
                         options.ModelId = ConfigManager.Instance.Data.OpenAI_Model;
+                    }
+                    if (!String.IsNullOrWhiteSpace(ConfigManager.Instance.Data.OpenAI_ReasoningEffort))
+                    {
+                        options.ReasoningEffort = ConfigManager.Instance.Data.OpenAI_ReasoningEffort;
+                    }
+                })
+                .AddEmergencyCalls(options =>
+                {
+                    options.OpenAiApiKey = ConfigManager.Instance.Data.OpenAI_API;
+                    if (!String.IsNullOrWhiteSpace(ConfigManager.Instance.Data.OpenAI_Model))
+                    {
+                        options.ModelId = ConfigManager.Instance.Data.OpenAI_Model;
+                    }
+                    if (!String.IsNullOrWhiteSpace(ConfigManager.Instance.Data.OpenAI_ReasoningEffort))
+                    {
+                        options.ReasoningEffort = ConfigManager.Instance.Data.OpenAI_ReasoningEffort;
                     }
                 })
                 .AddWorldWeather(options => { })
